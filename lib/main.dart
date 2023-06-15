@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.5),
+            color: Color(0xFF3b3333), //.withOpacity(0.5),
             // border: Border.all(width: 2, color: Colors.black),
             borderRadius: BorderRadius.circular(40),
           ),
@@ -262,7 +262,7 @@ class _HomePageState extends State<HomePage> {
               child: Center(
                 child: Icon(
                   type == 0 ? Icons.camera : Icons.image,
-                  color: Colors.white,
+                  color: Color(0xFFf2ebea),
                   size: 50,
                 ),
               )),
@@ -288,7 +288,7 @@ class _HomePageState extends State<HomePage> {
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: Colors.green,
+            color: Color(0xFFf2ebea),
             // border: Border.all(width: 2, color: Colors.black),
             borderRadius: BorderRadius.circular(40),
           ),
@@ -298,7 +298,7 @@ class _HomePageState extends State<HomePage> {
               child: Center(
                 child: Icon(
                   Icons.arrow_upward,
-                  color: Colors.white,
+                  color: Color(0xFF3b3333),
                   size: 50,
                 ),
               )),
