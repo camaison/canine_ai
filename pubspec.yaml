@@ -29,6 +29,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  collection: ^1.15.0
   flutter:
     sdk: flutter
 
@@ -61,9 +62,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/labels.txt
+    - assets/images/
     - assets/canine_ai_model.tflite
-    - assets/dog.jpg
+
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -78,6 +79,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-Black.ttf
+        - asset: assets/fonts/Nunito-Bold.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

@@ -23,11 +23,6 @@ if (flutterVersionName == null) {
 }
 
 android {
-    aaptOptions {
-        noCompress 'tflite'
-        noCompress 'lite'
-    }
-    
     namespace "com.example.canine_ai"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
