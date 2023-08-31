@@ -1100,7 +1100,7 @@ final Map<int, String> labels = {
   //   15: 'redbone',
   //   16: 'lakeland_terrier',
   //   17: 'boxer',
-  //   18: 'doberman',
+  18: 'doberman',
   //   19: 'otterhound',
   //   20: 'standard_schnauzer',
   //   21: 'irish_water_spaniel',
@@ -1135,7 +1135,7 @@ final Map<int, String> labels = {
   //   50: 'brittany_spaniel',
   //   51: 'kelpie',
   //   52: 'papillon',
-  //   53: 'border_collie',
+  53: 'border_collie',
   //   54: 'entlebucher',
   //   55: 'collie',
   //   56: 'malamute',
@@ -1201,5 +1201,5 @@ final Map<int, String> labels = {
   //   116: 'tibetan_mastiff',
   //   117: 'english_springer',
   //   118: 'cocker_spaniel',
-  //   119: 'rottweiler'
+  119: 'rottweiler'
 };

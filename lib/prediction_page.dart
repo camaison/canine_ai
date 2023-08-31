@@ -1,4 +1,6 @@
 // ignore_for_file: must_be_immutable
+import 'dart:math';
+
 import 'package:canine_ai/FadeAnimation.dart';
 import 'package:canine_ai/breed_data.dart';
 import 'package:canine_ai/prediction_score.dart';
@@ -38,6 +40,8 @@ class _PredictionPageState extends State<PredictionPage>
 
   @override
   Widget build(BuildContext context) {
+    int value = Random().nextInt(10);
+    Iterable<int> label = labels.keys;
     String? pred1, pred2, pred3;
     pred1 = labels[_heap[0]['index']] ?? "rott";
     pred2 = labels[_heap[1]['index']] ?? "rott";
