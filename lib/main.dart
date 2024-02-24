@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> loadModel() async {
     try {
-      String modelPath = 'assets/canine_ai_model.tflite';
+      String modelPath = 'assets/model/canine_ai_model.tflite';
       // Load model
       final ByteData modelData = await rootBundle.load(modelPath);
       final Uint8List modelBytes = modelData.buffer.asUint8List();
