@@ -9,10 +9,12 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:image/image.dart' as img;
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,12 +22,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -53,7 +57,7 @@ class _HomePageState extends State<HomePage> {
       final ByteData modelData = await rootBundle.load(modelPath);
       final Uint8List modelBytes = modelData.buffer.asUint8List();
       // Initialize interpreter
-      _interpreter = await Interpreter.fromBuffer(modelBytes);
+      _interpreter = Interpreter.fromBuffer(modelBytes);
     } catch (e) {
       print('Failed to load the model or labels: $e');
     }
@@ -133,7 +137,8 @@ class _HomePageState extends State<HomePage> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF416275), //.withOpacity(0.2),
+              Color(0xFF3b3333),
+              // Color(0xFF416275), //.withOpacity(0.2),
               // Color(0xFFbbcdda), //.withOpacity(0.2),
               Color(0xFFf6e0b7),
             ],
@@ -179,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      Container(
+                                                      SizedBox(
                                                           width: containerWidth,
                                                           height:
                                                               containerHeight,
@@ -252,7 +257,7 @@ class _HomePageState extends State<HomePage> {
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: Color(0xFF3b3333), //.withOpacity(0.5),
+            color: const Color(0xFF3b3333), //.withOpacity(0.5),
             // border: Border.all(width: 2, color: Colors.black),
             borderRadius: BorderRadius.circular(40),
           ),
@@ -262,7 +267,7 @@ class _HomePageState extends State<HomePage> {
               child: Center(
                 child: Icon(
                   type == 0 ? Icons.camera : Icons.image,
-                  color: Color(0xFFf2ebea),
+                  color: const Color(0xFFf2ebea),
                   size: 50,
                 ),
               )),
@@ -288,7 +293,7 @@ class _HomePageState extends State<HomePage> {
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: Color(0xFFf2ebea),
+            color: const Color(0xFFf2ebea),
             // border: Border.all(width: 2, color: Colors.black),
             borderRadius: BorderRadius.circular(40),
           ),

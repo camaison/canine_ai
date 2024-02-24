@@ -1,45 +1,10 @@
-// import 'package:flutter/material.dart';
-// import 'package:simple_animations/simple_animations.dart';
-
-// class FadeAnimation extends StatelessWidget {
-//   final double delay;
-//   final Widget child;
-
-//   FadeAnimation(this.delay, this.child);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final tween = MultiTrackTween([
-//       Track('opacity')
-//           .add(Duration(milliseconds: 500), Tween(begin: 0.0, end: 1.0)),
-//       Track('translateY').add(
-//           Duration(milliseconds: 500), Tween(begin: 120.0, end: 0.0),
-//           curve: Curves.easeOut)
-//     ]);
-
-//     return ControlledAnimation(
-//       delay: Duration(milliseconds: (500 * delay).round()),
-//       duration: tween.duration,
-//       tween: tween,
-//       child: child,
-//       builderWithChild: (context, child, animation) => Opacity(
-//         opacity: animation['opacity'],
-//         child: Transform.translate(
-//           offset: Offset(0, animation['translateY']),
-//           child: child,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 
 class FadeAnimation extends StatefulWidget {
   final double delay;
   final Widget child;
 
-  FadeAnimation(this.delay, this.child);
+  const FadeAnimation(this.delay, this.child, {super.key});
 
   @override
   _FadeAnimationState createState() => _FadeAnimationState();
@@ -57,7 +22,7 @@ class _FadeAnimationState extends State<FadeAnimation>
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
     );
 
     final curve = CurvedAnimation(
@@ -68,9 +33,11 @@ class _FadeAnimationState extends State<FadeAnimation>
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(curve);
     _translateYAnimation = Tween<double>(begin: 120.0, end: 0.0).animate(curve);
 
-    // Start the animation with the specified delay
+    // Start the animation with the specified delay and check if the widget is still mounted
     Future.delayed(Duration(milliseconds: (500 * widget.delay).round()), () {
-      _controller.forward();
+      if (mounted) {
+        _controller.forward();
+      }
     });
   }
 

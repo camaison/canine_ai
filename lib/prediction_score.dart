@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ConfidenceScoreWidget extends StatelessWidget {
   final double confidence;
 
-  ConfidenceScoreWidget({required this.confidence});
+  const ConfidenceScoreWidget({super.key, required this.confidence});
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +14,17 @@ class ConfidenceScoreWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         color: scoreColor.withOpacity(0.2), // Adjust the opacity as needed
       ),
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Icon(
             Icons.check_circle,
             color: scoreColor,
             size: 20,
           ),
-          SizedBox(width: 4),
+          const SizedBox(width: 4),
           Text(
             '${(confidence * 100).toStringAsFixed(2)}%',
             style: TextStyle(

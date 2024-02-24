@@ -1,14 +1,16 @@
 // ignore_for_file: must_be_immutable
-import 'dart:math';
 
 import 'package:canine_ai/FadeAnimation.dart';
-import 'package:canine_ai/breed_data.dart';
 import 'package:canine_ai/prediction_score.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class PredictionPage extends StatefulWidget {
-  late List _heap;
-  PredictionPage(this._heap);
+  final List _heap;
+  const PredictionPage(this._heap, {super.key});
 
   @override
   _PredictionPageState createState() => _PredictionPageState(_heap);
@@ -16,7 +18,7 @@ class PredictionPage extends StatefulWidget {
 
 class _PredictionPageState extends State<PredictionPage>
     with SingleTickerProviderStateMixin {
-  late List _heap;
+  final List _heap;
   _PredictionPageState(this._heap);
   late PageController _pageController;
   int totalPage = 3;
@@ -40,104 +42,221 @@ class _PredictionPageState extends State<PredictionPage>
 
   @override
   Widget build(BuildContext context) {
-    int value = Random().nextInt(10);
-    Iterable<int> label = labels.keys;
-    String? pred1, pred2, pred3;
-    pred1 = labels[_heap[0]['index']] ?? "rott";
-    pred2 = labels[_heap[1]['index']] ?? "rott";
-    pred3 = labels[_heap[2]['index']] ?? "rott";
+    String url1, url2, url3;
+    url1 =
+        "https://gist.githubusercontent.com/camaison/740c94ed824b61cb6caf1e2b8c3941d7/raw/${_heap[0]['index']}.json";
+    url2 =
+        "https://gist.githubusercontent.com/camaison/740c94ed824b61cb6caf1e2b8c3941d7/raw/${_heap[1]['index']}.json";
+    url3 =
+        "https://gist.githubusercontent.com/camaison/740c94ed824b61cb6caf1e2b8c3941d7/raw/${_heap[2]['index']}.json";
 
     return Scaffold(
       body: PageView(
           scrollDirection: Axis.vertical,
           controller: _pageController,
           children: <Widget>[
-            PageView(
-              controller: _pageController,
-              children: <Widget>[
-                makePage(
-                    page: 1,
-                    score: _heap[0]['score'],
-                    image: 'assets/images/${pred1}_1.jpg',
-                    title: breeds[_heap[0]['index']]['name'],
-                    description: breeds[_heap[0]['index']]['description']),
-                makePage(
-                    page: 2,
-                    score: _heap[0]['score'],
-                    image: 'assets/images/${pred1}_2.jpg',
-                    title: breeds[_heap[0]['index']]['name'],
-                    description:
-                        "Average Height:\n${breeds[_heap[0]['index']]['height']}\nAverage Weight:\n${breeds[_heap[0]['index']]['weight']}"),
-                makePage(
-                    page: 3,
-                    score: _heap[0]['score'],
-                    image: 'assets/images/${pred1}_3.jpg',
-                    title: breeds[_heap[0]['index']]['name'],
-                    description:
-                        "Average Life Span:\n${breeds[_heap[0]['index']]['lifespan']}\nAverage Litter Size:\n${breeds[_heap[0]['index']]['litter_size']}"),
-              ],
-            ),
-            PageView(
-              controller: _pageController,
-              children: <Widget>[
-                makePage(
-                    page: 1,
-                    image: 'assets/images/${pred2}_1.jpg',
-                    score: _heap[1]['score'],
-                    title: breeds[_heap[1]['index']]['name'],
-                    description: breeds[_heap[1]['index']]['description']),
-                makePage(
-                    page: 2,
-                    score: _heap[1]['score'],
-                    image: 'assets/images/${pred2}_2.jpg',
-                    title: breeds[_heap[1]['index']]['name'],
-                    description:
-                        "Average Height:\n${breeds[_heap[1]['index']]['height']}\nAverage Weight:\n${breeds[_heap[1]['index']]['weight']}"),
-                makePage(
-                    page: 3,
-                    score: _heap[1]['score'],
-                    image: 'assets/images/${pred2}_3.jpg',
-                    title: breeds[_heap[1]['index']]['name'],
-                    description:
-                        "Average Life Span:\n${breeds[_heap[1]['index']]['lifespan']}\nAverage Litter Size:\n${breeds[_heap[1]['index']]['litter_size']}"),
-              ],
-            ),
-            PageView(
-              controller: _pageController,
-              children: <Widget>[
-                makePage(
-                    page: 1,
-                    score: _heap[2]['score'],
-                    image: 'assets/images/${pred3}_1.jpg',
-                    title: breeds[_heap[2]['index']]['name'],
-                    description: breeds[_heap[2]['index']]['description']),
-                makePage(
-                    page: 2,
-                    score: _heap[2]['score'],
-                    image: 'assets/images/${pred3}_2.jpg',
-                    title: breeds[_heap[2]['index']]['name'],
-                    description:
-                        "Average Height:\n${breeds[_heap[2]['index']]['height']}\nAverage Weight:\n${breeds[_heap[2]['index']]['weight']}"),
-                makePage(
-                    page: 3,
-                    score: _heap[2]['score'],
-                    image: 'assets/images/${pred3}_3.jpg',
-                    title: breeds[_heap[2]['index']]['name'],
-                    description:
-                        "Average Life Span:\n${breeds[_heap[2]['index']]['lifespan']}\nAverage Litter Size:\n${breeds[_heap[2]['index']]['litter_size']}"),
-              ],
-            ),
+            FutureBuilder(
+                future: fetchData(url1),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data['images'] == null) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Lottie.asset('assets/lottie/404.json'),
+                            Text(
+                              snapshot.data["name"],
+                              style: const TextStyle(
+                                  color: Colors.brown,
+                                  fontSize: 50,
+                                  height: 1.2,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ConfidenceScoreWidget(
+                              confidence: _heap[0]['score'],
+                            )
+                          ],
+                        ),
+                      );
+                    } else {
+                      return PageView(
+                        controller: _pageController,
+                        children: <Widget>[
+                          makePage(
+                              page: 1,
+                              score: _heap[0]['score'],
+                              imageUrl: snapshot.data['images'][0],
+                              title: snapshot.data['name'],
+                              wikiUrl: snapshot.data['url'],
+                              description: snapshot.data['description']),
+                          makePage(
+                              page: 2,
+                              score: _heap[0]['score'],
+                              imageUrl: snapshot.data['images'][1],
+                              title: snapshot.data['name'],
+                              wikiUrl: snapshot.data['url'],
+                              description:
+                                  "Average Height:\n${snapshot.data['height']}\nAverage Weight:\n${snapshot.data['weight']}"),
+                          makePage(
+                              page: 3,
+                              score: _heap[0]['score'],
+                              imageUrl: snapshot.data['images'][2],
+                              wikiUrl: snapshot.data['url'],
+                              title: snapshot.data['name'],
+                              description:
+                                  "Average Life Span:\n${snapshot.data['lifespan']}\nAverage Litter Size:\n${snapshot.data['litter_size']}"),
+                        ],
+                      );
+                    }
+                  } else {
+                    return Center(
+                      child: Lottie.asset('assets/lottie/loading.json'),
+                      //CircularProgressIndicator(),
+                    );
+                  }
+                }),
+            FutureBuilder(
+                future: fetchData(url2),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data['images'] == null) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Lottie.asset('assets/lottie/404.json'),
+                            Text(
+                              snapshot.data["name"],
+                              style: const TextStyle(
+                                  color: Colors.brown,
+                                  fontSize: 50,
+                                  height: 1.2,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ConfidenceScoreWidget(
+                              confidence: _heap[1]['score'],
+                            )
+                          ],
+                        ),
+                      );
+                    } else {
+                      return PageView(
+                          controller: _pageController,
+                          children: <Widget>[
+                            makePage(
+                                page: 1,
+                                score: _heap[1]['score'],
+                                imageUrl: snapshot.data['images'][0],
+                                wikiUrl: snapshot.data['url'],
+                                title: snapshot.data['name'],
+                                description: snapshot.data['description']),
+                            makePage(
+                                page: 2,
+                                score: _heap[1]['score'],
+                                imageUrl: snapshot.data['images'][1],
+                                title: snapshot.data['name'],
+                                wikiUrl: snapshot.data['url'],
+                                description:
+                                    "Average Height:\n${snapshot.data['height']}\nAverage Weight:\n${snapshot.data['weight']}"),
+                            makePage(
+                                page: 3,
+                                score: _heap[1]['score'],
+                                imageUrl: snapshot.data['images'][2],
+                                title: snapshot.data['name'],
+                                wikiUrl: snapshot.data['url'],
+                                description:
+                                    "Average Life Span:\n${snapshot.data['lifespan']}\nAverage Litter Size:\n${snapshot.data['litter_size']}"),
+                          ]);
+                    }
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
+            FutureBuilder(
+                future: fetchData(url3),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data['images'] == null) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Lottie.asset('assets/lottie/404.json'),
+                            Text(
+                              snapshot.data["name"],
+                              style: const TextStyle(
+                                  color: Colors.brown,
+                                  fontSize: 50,
+                                  height: 1.2,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            ConfidenceScoreWidget(
+                              confidence: _heap[2]['score'],
+                            )
+                          ],
+                        ),
+                      );
+                    } else {
+                      return PageView(
+                          controller: _pageController,
+                          children: <Widget>[
+                            makePage(
+                                page: 1,
+                                score: _heap[2]['score'],
+                                imageUrl: snapshot.data['images'][0],
+                                title: snapshot.data['name'],
+                                wikiUrl: snapshot.data['url'],
+                                description: snapshot.data['description']),
+                            makePage(
+                                page: 2,
+                                score: _heap[2]['score'],
+                                imageUrl: snapshot.data['images'][1],
+                                title: snapshot.data['name'],
+                                wikiUrl: snapshot.data['url'],
+                                description:
+                                    "Average Height:\n${snapshot.data['height']}\nAverage Weight:\n${snapshot.data['weight']}"),
+                            makePage(
+                                page: 3,
+                                score: _heap[2]['score'],
+                                imageUrl: snapshot.data['images'][2],
+                                title: snapshot.data['name'],
+                                wikiUrl: snapshot.data['url'],
+                                description:
+                                    "Average Life Span:\n${snapshot.data['lifespan']}\nAverage Litter Size:\n${snapshot.data['litter_size']}"),
+                          ]);
+                    }
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
           ]),
     );
   }
 
-  Widget makePage({image, title, description, page, score}) {
+  Widget makePage({imageUrl, title, description, page, score, wikiUrl}) {
     return Container(
       decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover)),
+        image:
+            DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
+      ),
       child: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(begin: Alignment.bottomRight, stops: [
+            gradient:
+                LinearGradient(begin: Alignment.bottomRight, stops: const [
           0.3,
           0.9
         ], colors: [
@@ -167,7 +286,7 @@ class _PredictionPageState extends State<PredictionPage>
                               fontWeight: FontWeight.bold),
                         )),
                     Text(
-                      '/' + totalPage.toString(),
+                      '/$totalPage',
                       style: const TextStyle(color: Colors.white, fontSize: 15),
                     )
                   ],
@@ -217,11 +336,20 @@ class _PredictionPageState extends State<PredictionPage>
                         height: 20,
                       ),
                       FadeAnimation(
-                          2.5,
-                          const Text(
+                        2.5,
+                        TextButton(
+                          onPressed: () async {
+                            final Uri url = Uri.parse(wikiUrl);
+                            if (!await launchUrl(url)) {
+                              throw Exception('Could not launch $url');
+                            }
+                          },
+                          child: const Text(
                             'READ MORE',
                             style: TextStyle(color: Colors.white),
-                          )),
+                          ),
+                        ),
+                      ),
                       const SizedBox(
                         height: 30,
                       ),
@@ -232,5 +360,15 @@ class _PredictionPageState extends State<PredictionPage>
         ),
       ),
     );
+  }
+}
+
+Future<Map<String, dynamic>> fetchData(String gitUrl) async {
+  var response = await http.get(Uri.parse(gitUrl));
+  if (response.statusCode == 200) {
+    var jsonData = jsonDecode(response.body);
+    return jsonData;
+  } else {
+    throw Exception('Failed to load data');
   }
 }
